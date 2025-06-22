@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 require('dotenv').config();
 const bodyParser = require('body-parser');
-const otpRoutes = require('./routes');
+// const otpRoutes = require('./');
 dotenv.config();
 
 const app = express();
@@ -31,7 +31,7 @@ app.use('/api/auth', authRoutes);
 
 app.use(bodyParser.json());
 
-app.use('/api', otpRoutes);
+app.use('/api', authRoutes);
 
 app.listen(5000, () => console.log('Server running on port 5000'));
 

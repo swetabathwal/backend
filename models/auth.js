@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
         const user = new User({ name, email, password: hashedPassword });
         await user.save();
 
-        res.status(201).json({ message: 'User created successfully' });
+        res.status(201).json({ message: 'User created successfully', name: user.name, email: user.email });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -59,15 +59,16 @@ router.post('/login', async (req, res) => {
 // Endpoint to send OTP
 router.post('/send-otp', async (req, res) => {
   const { email } = req.body;
-
+  console.log(email);
   if (!email) return res.status(400).json({ message: 'Email is required' });
 
   // Generate a 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
+    console.log(otp);
   // Store OTP with expiry time
-  otpStore[email] = { otp, expiresAt: Date.now() + parseInt(process.env.OTP_EXPIRY_TIME) };
-
+  const otpExpiry = parseInt(process.env.OTP_EXPIRY_TIME, 10) || 300000; // default 5 minutes
+  otpStore[email] = { otp, expiresAt: Date.now() + otpExpiry };
+console.log(otpStore);
   try {
     await sendOtpEmail(email, otp);
     res.status(200).json({ message: 'OTP sent successfully' });
